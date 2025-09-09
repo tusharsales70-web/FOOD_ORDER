@@ -24,10 +24,10 @@
     <h2>🍽 Order Food</h2>
 
     <label>Naam</label>
-    <input id="name" placeholder="Tumhara naam" required>
+    <input id="name" placeholder="your name" required>
 
     <label>ID (Roll/Room/Employee ID)</label>
-    <input id="idnum" placeholder="Apna ID number" required>
+    <input id="idnum" placeholder="ID number" required>
 
     <label>Menu</label>
     <!-- Simple menu list. Edit these items below in JS if chahiyo -->
@@ -36,24 +36,41 @@
     </div>
 
     <label>Special Instructions (optional)</label>
-    <textarea id="note" rows="2" placeholder="Kuch batana ho to"></textarea>
+    <textarea id="note" rows="2" placeholder="anything you want"></textarea>
 
     <div style="margin-top:12px;">
       <button id="placeOrder">Place Order via WhatsApp</button>
-      <small>Order place karne par WhatsApp open hoga, fir tum Send kar dena.</small>
+      <small>if the order place open WhatsApp, then Send .</small>
     </div>
   </div>
 
   <script>
     // ========== CUSTOMIZE THESE ==========
-    const ownerNumber = "91XXXXXXXXXX"; // <- change to owner WhatsApp (91 + number)
+    const ownerNumber = "919689849862"; // <- change to owner WhatsApp (91 + number)
     // Menu items - change / add items as needed
     const menu = [
-      {name:"Pizza", price:120},
-      {name:"Burger", price:70},
-      {name:"Pasta", price:90},
-      {name:"Tea", price:15},
-      {name:"Paratha", price:40}
+	   <h3> Sandwiches </h3>
+      {name:"veg grill", price:60},
+      {name:"soya grill", price:60},
+      {name:"sprout grill", price:60},
+      {name:"paneer grill", price:90},
+      {name:"egg grill", price:90},
+	  {name:"chicken grill",price:150},
+	  <h3> juice </h3>
+	  {name:"orange", price:80},
+      {name:"anar", price:80},
+      {name:"mosambi", price:70},
+      {name:"pineapple", price:70},
+      {name:"water melon", price:70},
+	  {name:"beet root",price:50},
+	  {name:"carrot",price:50}
+	  <h3> smoothie </h3>
+	  {name:"green fat burner", price:100},
+      {name:"red fat burner", price:100},
+      {name:"maringa", price:100},
+      {name:"black cofee", price:20},
+      {name:"green tea", price:20},
+	  {name:"immunity booster",price:20},
     ];
     // Optional: Formspree endpoint if you want email (see section below)
     const formspreeEndpoint = ""; // e.g. "https://formspree.io/f/abcd1234" or leave empty
