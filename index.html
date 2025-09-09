@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 18px; background:#f7f7f7; color:#111; }
+    .card { max-width:480px; margin:12px auto; background:#fff; padding:16px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); }
+    h2{ text-align:center; margin:6px 0 12px;}
+    label{display:block; margin-top:10px; font-size:14px;}
+    input, select, textarea, button { width:100%; padding:12px; margin-top:6px; border-radius:8px; border:1px solid #ddd; font-size:15px;}
+    .row{display:flex; gap:8px;}
+    .row input{flex:1;}
+    button { background:#25D366; color:#fff; border:none; font-weight:600; }
+    small{color:#666; display:block; margin-top:8px;}
+    .menu-item{display:flex; justify-content:space-between; align-items:center; margin-top:8px;}
+    .menu-item button{width:auto; padding:8px 10px; background:#007bff;}
+    @media(max-width:420px){ .card{margin:8px} }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🍽 Order Food</h2>
+
+    <label>Naam</label>
+    <input id="name" placeholder="Tumhara naam" required>
+
+    <label>ID (Roll/Room/Employee ID)</label>
+    <input id="idnum" placeholder="Apna ID number" required>
+
+    <label>Menu</label>
+    <!-- Simple menu list. Edit these items below in JS if chahiyo -->
+    <div id="menuList">
+      <!-- JS will populate -->
+    </div>
+
+    <label>Special Instructions (optional)</label>
+    <textarea id="note" rows="2" placeholder="Kuch batana ho to"></textarea>
+
+    <div style="margin-top:12px;">
+      <button id="placeOrder">Place Order via WhatsApp</button>
+      <small>Order place karne par WhatsApp open hoga, fir tum Send kar dena.</small>
+    </div>
+  </div>
+
+  <script>
+    // ========== CUSTOMIZE THESE ==========
+    const ownerNumber = "91XXXXXXXXXX"; // <- change to owner WhatsApp (91 + number)
+    // Menu items - change / add items as needed
+    const menu = [
+      {name:"Pizza", price:120},
+      {name:"Burger", price:70},
+      {name:"Pasta", price:90},
+      {name:"Tea", price:15},
+      {name:"Paratha", price:40}
+    ];
+    // Optional: Formspree endpoint if you want email (see section below)
+    const formspreeEndpoint = ""; // e.g. "https://formspree.io/f/abcd1234" or leave empty
+    // ======================================
+
+    // Build menu UI
+    const menuList = document.getElementById('menuList');
+    menu.forEach((m, idx) => {
+      const div = document.createElement('div');
+      div.className = 'menu-item';
+      div.innerHTML = `
+        <div>
+          <div style="font-weight:600">${m.name}</div>
+          <div style="font-size:13px;color:#666">₹${m.price}</div>
+        </div>
+        <div style="min-width:110px; text-align:right;">
+          <input type="number" min="0" value="0" id="qty${idx}" style="width:70px; padding:8px;">
+        </div>
+      `;
+      menuList.appendChild(div);
+    });
+
+    // Helper: collect selected items
+    function getSelectedItems(){
+      const items = [];
+      menu.forEach((m, idx) => {
+        const q = parseInt(document.getElementById('qty'+idx).value) || 0;
+        if(q>0) items.push({name:m.name, qty:q, price:m.price});
+      });
+      return items;
+    }
+
+    document.getElementById('placeOrder').addEventListener('click', function(){
+      const name = document.getElementById('name').value.trim();
+      const idnum = document.getElementById('idnum').value.trim();
+      const note = document.getElementById('note').value.trim();
+      const items = getSelectedItems();
+
+      if(!name || !idnum){ alert('Name aur ID dalna zaroori hai'); return; }
+      if(items.length === 0){ alert('Koi item select karo (quantity > 0)'); return; }
+
+      let summary = '';
+      let total = 0;
+      items.forEach(it => { summary += ${it.name} x ${it.qty}\n; total += it.qty*it.price; });
+
+      const message = New Order\nName: ${name}\nID: ${idnum}\nItems:\n${summary}Total: ₹${total}\nNote: ${note};
+
+      // 1) WhatsApp link (opens app)
+      const waLink = https://wa.me/${ownerNumber}?text=${encodeURIComponent(message)};
+      window.open(waLink, '_blank');
+
+      // 2) Optional: send to Formspree (email) - if endpoint provided
+      if(formspreeEndpoint){
+        // create basic POST
+        fetch(formspreeEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, idnum, items, total, note })
+        }).catch(()=>{/* ignore errors */});
+      }
+    });
+  </script>
+</body>
+</html>
